@@ -2,6 +2,7 @@
 #include <Ethernet.h>
 #include "nRF24L01.h"
 #include "RF24.h"
+#include <Servo.h>
 /**
    Variable permettant de choisir entre une assignation
    fixe ou dynamique du niveau 3 OSI
@@ -35,7 +36,11 @@ char msg[3];
 const uint8_t address[] = { 0x10, 0x10, 0x10, 0x10, 0x01 };
 int LED1 = 3;
 
+//Serval
+Servo monserval;
+ 
 void setup() {
+  monserval.attach(9);  // utilise la broche 9 pour le contrôle du servomoteur 
   // Démarrage du port série
   Serial.begin(9600);
   /**
@@ -78,6 +83,9 @@ void setup() {
 }
 
 void loop() {
+  monserval.write(0); // positionne le servomoteur à 0° 
+   delay(5000);
+  monserval.write(90); // positionne le servomoteur à 90° 
  // On écoute les connections entrantes
 EthernetClient client = server.available();
 // Si la connection est établie (SYN / SYN+ACK / ACK)...
