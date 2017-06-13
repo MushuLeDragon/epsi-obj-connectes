@@ -1,5 +1,7 @@
 #include <SPI.h>
 #include <Ethernet.h>
+#include "nRF24L01.h"
+#include "RF24.h"
 /**
    Variable permettant de choisir entre une assignation
    fixe ou dynamique du niveau 3 OSI
@@ -25,6 +27,13 @@ IPAddress server_dns = { 192, 168, 221, 1 };
 
 // Serveur écoutant sur le port 80
 EthernetServer server(80);
+
+//RADIO
+RF24 radio(7, 8);
+
+char msg[3];
+const uint8_t address[] = { 0x10, 0x10, 0x10, 0x10, 0x01 };
+int LED1 = 3;
 
 void setup() {
   // Démarrage du port série
@@ -55,7 +64,19 @@ void setup() {
   Serial.println(Ethernet.dnsServerIP());
   // Démarrage du serveur
   server.begin();
+
+  //Radio
+   if (!radio.begin()) {
+    Serial.print(F("Radio fail"));
+    while (true);
+  }
+  radio.openReadingPipe(1, address);
+  radio.startListening();
+  pinMode(LED1, OUTPUT);
+  digitalWrite(LED1, HIGH);
+  Serial.println(F("Ready"));
 }
+
 void loop() {
  // On écoute les connections entrantes
 EthernetClient client = server.available();
@@ -96,5 +117,17 @@ if (client) {
   // Fin de la requête
   Serial.println(F(""));
   Serial.println(F("---- end request ----"));
+  }
+
+  if (radio.available()) {
+    radio.read(msg, sizeof(msg));
+    Serial.println(msg);
+    if (strcmp(msg, "on") == 0) {
+      Serial.println("mise a feu");
+      digitalWrite(LED1, LOW);
+    }else if (strcmp(msg, "OF") == 0) {
+      Serial.println("mise en arret");
+      digitalWrite(LED1, HIGH);
+    }
 }
 }
