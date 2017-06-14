@@ -1,23 +1,53 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
   <title>La maison qui est bien</title>
-  <!-- <link rel="stylesheet" href="css/styles.css?v=1.0"> -->
-  <script
-    src="https://code.jquery.com/jquery-3.2.1.min.js"
-    crossorigin="anonymous"
-  ></script>
-  <script src="script.js"></script>
+  <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css">
 </head>
-<body>
-  <button onclick='ouvrePortail();'>Ouvrir portail</button><br>
-  <button onclick='fermePortail();'>Fermer portail</button><br>
-  <hr>
-  Est-ce que le garage est ouvert ?<br>
-  <span class="isGarageOuvert"></span><br>
-  <hr>
-  Est-ce qu'il y a du mouvement ?<br>
-  <span class="isMovement"></span><br>
+
+<body class="grey lighten-5">
+  <nav>
+    <div class="purple darken-1 nav-wrapper">
+      <a href="#" class="brand-logo">My Sweet Home</a>
+    </div>
+  </nav>
+  <div style="margin-top: 30px;" class="container">
+   <div class="row">
+    <div class="col s12 l6">
+      <a style="width: 100%;" class="waves-effect waves-light btn" onclick='ouvrePortail();'><i class="material-icons right">directions_car</i>Ouvrir portail</a><br><br>
+    </div>
+    <div class="col s12 l6">
+      <a style="width: 100%;" class="waves-effect waves-light btn" onclick='fermePortail();'><i class="material-icons right">vpn_key</i>Fermer portail</a><br><br>
+    </div>
+  </div>
+  <div class="divider"></div>
+    <div style="margin-top: 30px; margin-bottom: 30px;" class="switch">
+      <label>
+         Garage fermé
+         <input class="garageOuvert" disabled type="checkbox">
+         <span class="lever"></span>
+         Garage ouvert
+       </label>
+    </div>
+  <div class="divider"></div>
+    <div style="margin-top: 30px; margin-bottom: 30px;" class="switch">
+      <label>
+         Pas de mouvement
+         <input class="mouvement" disabled type="checkbox">
+         <span class="lever"></span>
+         Mouvement
+       </label>
+    </div>
+  </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js" crossorigin="anonymous"></script>
+  <script src="script.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/js/materialize.min.js"></script>
 </body>
 </html>
