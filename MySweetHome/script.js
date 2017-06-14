@@ -11,8 +11,11 @@ function ouvrePortail() {
 function getInfos() {
   $.get(ip + 'getInfos', function (data) {
     console.log(data);
+    $('.mouvement').prop('checked', data.mouvement);
+    $('.garageOuvert').prop('checked', data.garageOuvert);
   });
 
+  // 300ms après le succès, s'appelle récursivement
   setTimeout(getInfos, 300);
 }
 
@@ -27,6 +30,6 @@ function test() {
 
 $(function() {
   // init polling
-  // setTimeout(getInfos, 300);
+  getInfos();
   test();
 });
