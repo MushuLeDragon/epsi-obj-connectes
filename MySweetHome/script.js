@@ -19,14 +19,6 @@ function getInfos() {
   setTimeout(getInfos, 300);
 }
 
-var checked = true;
-
-function test() {
-  checked = !checked;
-  $('.mouvement').prop('checked', checked);
-  $('.garageOuvert').prop('checked', !checked);
-}
-
 $(function() {
   // init polling
   getInfos();
