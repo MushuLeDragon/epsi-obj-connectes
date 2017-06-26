@@ -1,4 +1,4 @@
-var ip = "http://192.168.0.23/";
+var ip = "http://192.168.112.14/";
 
 function fermePortail() {
   $.get(ip + "?portal=close");
@@ -9,7 +9,7 @@ function ouvrePortail() {
 }
 
 function getInfos() {
-  $.get(ip + 'getInfos', function (data) {
+  $.get(ip + 'infos', function (data) {
     console.log(data);
     $('.mouvement').prop('checked', data.mouvement);
     $('.garageOuvert').prop('checked', data.garageOuvert);
@@ -25,11 +25,9 @@ function test() {
   checked = !checked;
   $('.mouvement').prop('checked', checked);
   $('.garageOuvert').prop('checked', !checked);
-  setTimeout(test, 1500);
 }
 
 $(function() {
   // init polling
   getInfos();
-  test();
 });
