@@ -373,10 +373,8 @@ void displayUrlVariables() {
 
 void portalManage(char instruction[]){
   if (strcmp(instruction, "open") == 0) {
-  // Démarrage du port série
-  monserval.write(110); // positionne le servomoteur à 120°
-  }else if(strcmp(instruction, "close") == 0){
-  monserval.write(5); // positionne le servomoteur à 10°
+	monserval.write(110); // positionne le servomoteur à 110°
+  } else if(strcmp(instruction, "close") == 0){
+	monserval.write(5); // positionne le servomoteur à 5°
   }
 }
-

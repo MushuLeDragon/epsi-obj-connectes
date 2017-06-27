@@ -10,7 +10,6 @@ function ouvrePortail() {
 
 function getInfos() {
   $.get(ip + 'infos', function (data) {
-    console.log(data);
     $('.mouvement').prop('checked', data.mouvement);
     $('.garageOuvert').prop('checked', data.garageOuvert);
   });
@@ -23,3 +22,4 @@ $(function() {
   // init polling
   getInfos();
 });
+
