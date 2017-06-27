@@ -1,7 +1,7 @@
 #include <SPI.h>
 #include <Ethernet.h>
-#include "nRF24L01.h"
-#include "RF24.h"
+#include <nRF24L01.h>
+#include <RF24.h>
 #include <Servo.h>
 /**
    Variable permettant de choisir entre une assignation
@@ -63,19 +63,31 @@ EthernetServer server(80);
 
 //RADIO
 RF24 radio(7, 8);
-
 char msg[3];
 const uint8_t address[] = { 0x10, 0x10, 0x10, 0x10, 0x01 };
 int LED1 = 3;
+boolean movement = false;
 
 //Serval
 Servo monserval;
 int monservalOpen = 0;
+boolean isOpen = false;
 
 void setup() {
+  Serial.begin(9600);
+  //Radio
+  if (!radio.begin()) {
+    Serial.print(F("Radio fail"));
+    while (true);
+  }
+  Serial.println(F("Ready"));
+  radio.openReadingPipe(1, address);
+  radio.startListening();
+  pinMode(LED1, OUTPUT);
+  digitalWrite(LED1, HIGH);
+  
   monserval.attach(9);  // utilise la broche 9 pour le contrôle du servomoteur
   monserval.write(5);
-  Serial.begin(9600);
   /**
      Démarrage du shield Ethernet sans spécifier d'adresse IP
      Cela oblige le contrôleur Ethernet à demander une configuration OSI 3
@@ -102,17 +114,6 @@ void setup() {
   Serial.println(Ethernet.dnsServerIP());
   // Démarrage du serveur
   server.begin();
-
-  //Radio
-   if (!radio.begin()) {
-    Serial.print(F("Radio fail"));
-    while (true);
-  }
-  radio.openReadingPipe(1, address);
-  radio.startListening();
-  pinMode(LED1, OUTPUT);
-  digitalWrite(LED1, HIGH);
-  Serial.println(F("Ready"));
 }
 
 void loop() {
@@ -130,7 +131,6 @@ void loop() {
               //displayUrlVariables();
               for (uint8_t i = 0; i < nbParam; i++) {
                 if(strcmp(param_names[i], "portal") == 0){
-                  Serial.println(param_values[i]);
                   portalManage(param_values[i]);
                 }
               }
@@ -151,10 +151,10 @@ void loop() {
     radio.read(msg, sizeof(msg));
     Serial.println(msg);
     if (strcmp(msg, "on") == 0) {
-      Serial.println("mise a feu");
+      
       digitalWrite(LED1, LOW);
     }else if (strcmp(msg, "OF") == 0) {
-      Serial.println("mise en arret");
+      
       digitalWrite(LED1, HIGH);
     }
 }
@@ -336,12 +336,22 @@ void sendHeader(EthernetClient client) {
     client.println(F(" Internal Server Error"));
   }
   // Format de la réponse
-  client.println(F("Content-Type: text/html"));
+  client.println(F("Content-Type: application/json"));
+  client.println(F("Access-Control-Allow-Origin: *"));
   // On prévient le client que la connexion est fermée
   client.println(F("Connection: close"));
   // Saut de ligne qui sépare le header du body
   client.println();
-  client.println("it works");
+  if(strcmp(url_parts[0], "infos") == 0){
+    client.println("{\"mouvement\":");
+    client.print(movement);
+    client.print(",");
+    client.print("\"garageOuvert\":");
+    client.print(isOpen);
+    client.print("}");
+  }else{
+    client.println("it works");
+  }
   // On attend que le client reçoive la réponse
   delay(1);
 }
@@ -359,7 +369,6 @@ void displayUrlVariables() {
         Serial.print(F(" / "));
       }
     }
-    Serial.println();
     for (uint8_t i = 0; i < nbParam; i++) {
       Serial.print(param_names[i]);
       Serial.print(F("="));
@@ -373,10 +382,12 @@ void displayUrlVariables() {
 
 void portalManage(char instruction[]){
   if (strcmp(instruction, "open") == 0) {
-  // Démarrage du port série
-  monserval.write(110); // positionne le servomoteur à 120°
+    // Démarrage du port série
+    monserval.write(110); // positionne le servomoteur à 120°
+    isOpen = true;
   }else if(strcmp(instruction, "close") == 0){
-  monserval.write(5); // positionne le servomoteur à 10°
+    monserval.write(5); // positionne le servomoteur à 10°
+    isOpen = false;
   }
 }
 
