@@ -1,8 +1,16 @@
 #include <SPI.h>
 #include <Ethernet.h>
-#include <nRF24L01.h>
-#include <RF24.h>
+#include "nRF24L01.h"
+#include "RF24.h"
 #include <Servo.h>
+
+//RADIO
+RF24 radio(7, 8);
+char msg[3];
+const uint8_t address[] = { 0x10, 0x10, 0x10, 0x10, 0x01 };
+int LED1 = 3;
+boolean movement = false;
+
 /**
    Variable permettant de choisir entre une assignation
    fixe ou dynamique du niveau 3 OSI
@@ -61,13 +69,6 @@ char url[URL_MAX_PART*URL_PART_SIZE+URL_MAX_PART];
 // Serveur écoutant sur le port 80
 EthernetServer server(80);
 
-//RADIO
-RF24 radio(7, 8);
-char msg[3];
-const uint8_t address[] = { 0x10, 0x10, 0x10, 0x10, 0x01 };
-int LED1 = 3;
-boolean movement = false;
-
 //Serval
 Servo monserval;
 int monservalOpen = 0;
@@ -86,7 +87,7 @@ void setup() {
   pinMode(LED1, OUTPUT);
   digitalWrite(LED1, HIGH);
   
-  monserval.attach(9);  // utilise la broche 9 pour le contrôle du servomoteur
+  monserval.attach(4);  // utilise la broche 9 pour le contrôle du servomoteur
   monserval.write(5);
   /**
      Démarrage du shield Ethernet sans spécifier d'adresse IP
